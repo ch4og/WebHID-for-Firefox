@@ -88,11 +88,7 @@
 	}
 	window.HIDConnectionEvent = HIDConnectionEvent;
 
-	if (!localStorage.getItem("WebHID for Firefox: requested devices"))
-	{
-		localStorage.setItem("WebHID for Firefox: requested devices", "[]");
-	}
-	const requested_devices = JSON.parse(localStorage.getItem("WebHID for Firefox: requested devices"));
+	const requested_devices = JSON.parse(localStorage.getItem("WebHID for Firefox: requested devices") ?? "[]");
 	const save_requested_devices = () => localStorage.setItem("WebHID for Firefox: requested devices", JSON.stringify(requested_devices));
 
 	let devlist = [];
