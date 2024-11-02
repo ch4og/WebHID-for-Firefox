@@ -160,6 +160,10 @@
 						const msg = event.data.split(":");
 						switch (msg[0])
 						{
+						case "ver": // sent on establish as of 0.1.4
+							console.log("WebHID for Firefox: Local server is on version "+msg[1]);
+							break;
+
 						case "dev":
 							if (msg.length > 1)
 							{

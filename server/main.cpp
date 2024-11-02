@@ -371,11 +371,6 @@ SOEKVYljbu9o5nFbg1zU0Ck=
 	ServerWebService web_srv;
 	web_srv.should_accept_websocket_connection = [](Socket& s, const HttpRequest& req, ServerWebService&)
 	{
-		if (req.path == "/r1")
-		{
-			s.custom_data.getStructFromMap(ClientData).supports_report_ids = true;
-		}
-
 #if DEBUG || !SOUP_WINDOWS
 		return true;
 #else
@@ -393,6 +388,14 @@ SOEKVYljbu9o5nFbg1zU0Ck=
 		}
 		return false;
 #endif
+	};
+	web_srv.on_websocket_connection_established = [](Socket& s, const HttpRequest& req, ServerWebService&)
+	{
+		if (req.path == "/r1")
+		{
+			s.custom_data.getStructFromMap(ClientData).supports_report_ids = true;
+		}
+		ServerWebService::wsSendText(s, "ver:0.1.4");
 	};
 	web_srv.on_websocket_message = [](WebSocketMessage& msg, Socket& s, ServerWebService&)
 	{
