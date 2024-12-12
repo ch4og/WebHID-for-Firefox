@@ -97,7 +97,7 @@ struct ReceiveReportsTask : public soup::Task
 			//std::cout << "received report for " << task.hid_hash << std::endl;
 			BufferWriter bw;
 			uint8_t msgid = (task.report_ids ? 1 : 0); bw.u8(msgid);
-			bw.u32_be(task.hid_hash);
+			bw.u32be(task.hid_hash);
 			bw.buf.append(report);
 			task.deque.emplace_front(bw.buf.toString());
 		}
@@ -446,7 +446,7 @@ SOEKVYljbu9o5nFbg1zU0Ck=
 						}
 						BufferWriter bw;
 						uint8_t msgid = 2; bw.u8(msgid);
-						bw.u32_be(hid_hash);
+						bw.u32be(hid_hash);
 						bw.buf.append(report);
 						ServerWebService::wsSendBin(s, bw.buf.toString());
 						break;
@@ -463,7 +463,7 @@ SOEKVYljbu9o5nFbg1zU0Ck=
 			{
 				if (msg.data.size() >= 5)
 				{
-					uint32_t hid_hash; r.u32_be(hid_hash);
+					uint32_t hid_hash; r.u32be(hid_hash);
 					for (auto& hid : hwHid::getAll())
 					{
 						if (hid_to_hash(hid) == hid_hash && hid_is_permitted(hid))
@@ -481,7 +481,7 @@ SOEKVYljbu9o5nFbg1zU0Ck=
 			{
 				if (msg.data.size() >= 5)
 				{
-					uint32_t hid_hash; r.u32_be(hid_hash);
+					uint32_t hid_hash; r.u32be(hid_hash);
 					for (auto& hid : hwHid::getAll())
 					{
 						if (hid_to_hash(hid) == hid_hash && hid_is_permitted(hid))
