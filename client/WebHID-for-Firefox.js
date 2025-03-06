@@ -101,7 +101,7 @@
 		{
 			ws_promise = new Promise(function(resolve, reject)
 			{
-				const ws = new WebSocket("wss://127-0-0-1.p2ptls.com:33881/r1");
+				const ws = new WebSocket("wss://127-0-0-1.faketls.com:33881/r1");
 				ws.binaryType = "arraybuffer";
 				ws.onopen = function()
 				{
