@@ -88,7 +88,7 @@ struct ReceiveReportsTask : public soup::Task
 		ReceiveReportsTask& task = cap.get<ReceiveReportsTask>();
 		while (true)
 		{
-			const Buffer& report = (task.report_ids ? task.hid.receiveReportWithReportId() : task.hid.receiveReportWithoutReportId());
+			const Buffer<>& report = (task.report_ids ? task.hid.receiveReportWithReportId() : task.hid.receiveReportWithoutReportId());
 			SOUP_IF_UNLIKELY (report.empty())
 			{
 				//std::cout << "received empty report for " << task.hid_hash << std::endl;
@@ -97,7 +97,7 @@ struct ReceiveReportsTask : public soup::Task
 			//std::cout << "received report for " << task.hid_hash << std::endl;
 			BufferWriter bw;
 			uint8_t msgid = (task.report_ids ? 1 : 0); bw.u8(msgid);
-			bw.u32be(task.hid_hash);
+			bw.u32_be(task.hid_hash);
 			bw.buf.append(report);
 			task.deque.emplace_front(bw.buf.toString());
 		}
@@ -413,7 +413,7 @@ hToW9o9CQMIhaR43G8di1kjF
 						}
 						BufferWriter bw;
 						uint8_t msgid = 2; bw.u8(msgid);
-						bw.u32be(hid_hash);
+						bw.u32_be(hid_hash);
 						bw.buf.append(report);
 						ServerWebService::wsSendBin(s, bw.buf.toString());
 						break;
@@ -430,7 +430,7 @@ hToW9o9CQMIhaR43G8di1kjF
 			{
 				if (msg.data.size() >= 5)
 				{
-					uint32_t hid_hash; r.u32be(hid_hash);
+					uint32_t hid_hash; r.u32_be(hid_hash);
 					for (auto& hid : hwHid::getAll())
 					{
 						if (hid_to_hash(hid) == hid_hash && hid_is_permitted(hid))
@@ -448,7 +448,7 @@ hToW9o9CQMIhaR43G8di1kjF
 			{
 				if (msg.data.size() >= 5)
 				{
-					uint32_t hid_hash; r.u32be(hid_hash);
+					uint32_t hid_hash; r.u32_be(hid_hash);
 					for (auto& hid : hwHid::getAll())
 					{
 						if (hid_to_hash(hid) == hid_hash && hid_is_permitted(hid))

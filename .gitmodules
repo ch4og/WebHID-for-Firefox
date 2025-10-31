@@ -1,0 +1,3 @@
+[submodule "server/Soup"]
+	path = server/Soup
+	url = https://github.com/calamity-inc/Soup
