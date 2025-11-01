@@ -361,7 +361,7 @@ mGJpw7X/6Pg0ux0Ze11cr2c=
 		{
 			s.custom_data.getStructFromMap(ClientData).supports_report_ids = true;
 		}
-		ServerWebService::wsSendText(s, "ver:0.2.0");
+		ServerWebService::wsSendText(s, "ver:0.2.2");
 	};
 	web_srv.on_websocket_message = [](WebSocketMessage& msg, Socket& s, ServerWebService&)
 	{
