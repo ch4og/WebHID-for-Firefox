@@ -27,6 +27,12 @@ browser.webRequest.onBeforeRequest.addListener(
 
 		return {};
 	},
-	{ urls: ["https://wootility.io/"], types: ["main_frame"] },
+	{
+		urls: [
+			"https://wootility.io/",
+			"https://beta.wootility.io/",
+		],
+		types: ["main_frame"]
+	},
 	["blocking"]
 );

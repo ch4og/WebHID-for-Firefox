@@ -19,7 +19,8 @@
 	"permissions": [
 		"webRequest",
 		"webRequestBlocking",
-		"https://wootility.io/"
+		"https://wootility.io/",
+		"https://beta.wootility.io/"
 	],
 	"background": {
 		"scripts": ["background.js"]
