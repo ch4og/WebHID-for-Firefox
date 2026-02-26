@@ -1,3 +1,4 @@
 client/content_script.js
 int/
-*.exe
+server/WebHID-for-Firefox-Server
+server/WebHID-for-Firefox-Server.exe
