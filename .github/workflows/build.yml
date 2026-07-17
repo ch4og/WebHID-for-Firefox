@@ -1,0 +1,74 @@
+name: Build
+
+on:
+  push:
+    tags: ['*']
+  workflow_dispatch:
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Build
+        run: |
+          cd server
+          g++ -std=c++17 -fno-rtti -O3 -DSOUP_STANDALONE \
+            -I Soup/soup \
+            main.cpp Soup/soup/*.cpp \
+            -pthread -ldl -lresolv -lstdc++fs \
+            -o WebHID-for-Firefox-Server
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WebHID-for-Firefox-Server-Linux
+          path: server/WebHID-for-Firefox-Server
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Build
+        shell: cmd
+        run: |
+          cd server
+          mkdir soup_out
+          for %%f in (Soup\soup\*.cpp) do cl /EHsc /std:c++20 /O2 /MT /nologo /c ^
+            /D_CRT_SECURE_NO_WARNINGS /DNOMINMAX /DWIN32_LEAN_AND_MEAN ^
+            /D_WIN32_WINNT=0x601 /DNDEBUG /DSOUP_STANDALONE ^
+            /I Soup\soup /Fo"soup_out/%%~nf.obj" "%%f"
+          cl /EHsc /std:c++20 /O2 /MT /nologo /c ^
+            /D_CRT_SECURE_NO_WARNINGS /DNOMINMAX /DWIN32_LEAN_AND_MEAN ^
+            /D_WIN32_WINNT=0x601 /DNDEBUG /DSOUP_STANDALONE ^
+            /I Soup\soup /Fomain.obj main.cpp
+          link /nologo /SUBSYSTEM:WINDOWS /ENTRY:wWinMainCRTStartup ^
+            /OUT:WebHID-for-Firefox-Server.exe soup_out\*.obj main.obj
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WebHID-for-Firefox-Server-Windows
+          path: server/WebHID-for-Firefox-Server.exe
+
+  build-extension:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+      - name: Build XPI
+        run: |
+          cd client
+          php make_content_script.php
+          cd ..
+          cd client && zip -r ../WebHID-for-Firefox.xpi * && cd ..
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WebHID-for-Firefox
+          path: WebHID-for-Firefox.xpi
