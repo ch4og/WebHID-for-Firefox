@@ -341,6 +341,10 @@ fPOzDget78P/d2IgzbaKEA==
 	ServerWebService web_srv;
 	web_srv.should_accept_websocket_connection = [](Socket& s, const HttpRequest& req, ServerWebService&)
 	{
+		if (!s.peer.ip.isLoopback())
+		{
+			return false;
+		}
 #if DEBUG || !SOUP_WINDOWS
 		return true;
 #else
