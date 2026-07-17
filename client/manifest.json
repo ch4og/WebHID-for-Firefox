@@ -2,9 +2,9 @@
 	"manifest_version": 2,
 	"name": "WebHID for Firefox",
 	"description": "Provides the WebHID API by connecting to a local server (needs to be installed separately).",
-	"homepage_url": "https://github.com/Sainan/WebHID-for-Firefox",
-	"version": "0.2.3",
-	"author": "Sainan",
+	"homepage_url": "https://github.com/ch4og/WebHID-for-Firefox",
+	"version": "0.2.99",
+	"author": "ch4og",
 	"browser_specific_settings": {
 		"gecko": {
 			"id": "webhid@for-firefox",
