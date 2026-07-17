@@ -95,13 +95,14 @@
 	const hash_to_dev = {};
 	let active_subscriptions = 0;
 	let ws_promise, devlist_promise, devlist_resolve;
+	let ws;
 	const get_ws = function()
 	{
 		if (!ws_promise)
 		{
 			ws_promise = new Promise(function(resolve, reject)
 			{
-				const ws = new WebSocket("wss://127-0-0-1.faketls.com:33881/r1");
+				ws = new WebSocket("wss://127-0-0-1.faketls.com:33881/r1");
 				ws.binaryType = "arraybuffer";
 				ws.onopen = function()
 				{

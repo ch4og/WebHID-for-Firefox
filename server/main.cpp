@@ -130,20 +130,23 @@ struct ReceiveReportsTask : public soup::Task
 		{
 			hid.cancelReceiveReport();
 		}
-		else
+
+		while (auto node = deque.pop_back())
 		{
-			while (auto node = deque.pop_back())
+			if (!static_cast<Socket&>(*sock).isWorkDoneOrClosed())
 			{
-				//std::cout << "received report: " << string::bin2hex(*node) << std::endl;
 				ServerWebService::wsSendBin(static_cast<Socket&>(*sock), std::move(*node));
 			}
 		}
 
 		SOUP_IF_UNLIKELY (!thrd.isRunning())
 		{
-			std::string msg = "stopped:";
-			msg.append(std::to_string(hid_hash));
-			ServerWebService::wsSendText(static_cast<Socket&>(*sock), std::move(msg));
+			if (!static_cast<Socket&>(*sock).isWorkDoneOrClosed())
+			{
+				std::string msg = "stopped:";
+				msg.append(std::to_string(hid_hash));
+				ServerWebService::wsSendText(static_cast<Socket&>(*sock), std::move(msg));
+			}
 
 			removeFromClientSubscriptions();
 
@@ -153,6 +156,10 @@ struct ReceiveReportsTask : public soup::Task
 
 	int getSchedulingDisposition() const noexcept final
 	{
+		if (static_cast<Socket&>(*sock).isWorkDoneOrClosed())
+		{
+			return NEUTRAL;
+		}
 		return HIGH_FREQUENCY;
 	}
 };
