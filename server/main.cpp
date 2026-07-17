@@ -470,7 +470,10 @@ fPOzDget78P/d2IgzbaKEA==
 							uint8_t msgid = 2; bw.u8(msgid);
 							bw.u32_be(hid_hash);
 							bw.u8(reportid);
-							bw.buf.append(report);
+							if (report.size() > 1)
+							{
+								bw.buf.append(report.data() + 1, report.size() - 1);
+							}
 							ServerWebService::wsSendBin(s, bw.buf.toString());
 							break;
 						}
