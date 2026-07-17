@@ -5,6 +5,14 @@
 	"homepage_url": "https://github.com/Sainan/WebHID-for-Firefox",
 	"version": "0.2.3",
 	"author": "Sainan",
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "webhid@for-firefox",
+			"data_collection_permissions": {
+				"required": ["none"]
+			}
+		}
+	},
 	"content_scripts": [
 		{
 			"matches": [
