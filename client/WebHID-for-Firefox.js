@@ -91,6 +91,8 @@
 	const requested_devices = JSON.parse(localStorage.getItem("WebHID for Firefox: requested devices") ?? "[]");
 	const save_requested_devices = () => localStorage.setItem("WebHID for Firefox: requested devices", JSON.stringify(requested_devices));
 
+	const auth_token = window._webhid_token || "";
+
 	let devlist = [];
 	const hash_to_dev = {};
 	let active_subscriptions = 0;
@@ -102,7 +104,12 @@
 		{
 			ws_promise = new Promise(function(resolve, reject)
 			{
-				ws = new WebSocket("wss://127-0-0-1.faketls.com:33881/r1");
+				let ws_url = "wss://127-0-0-1.faketls.com:33881/r1";
+				if (auth_token)
+				{
+					ws_url += "?token=" + encodeURIComponent(auth_token);
+				}
+				ws = new WebSocket(ws_url);
 				ws.binaryType = "arraybuffer";
 				ws.onopen = function()
 				{
@@ -112,6 +119,52 @@
 				{
 					reject("Failed to connect to local WebHID provider server");
 					ws_promise = undefined;
+
+					if (!document.getElementById("webhid-for-firefox-error"))
+					{
+						let div = document.createElement("div");
+						div.id = "webhid-for-firefox-error";
+						div.style.position = "fixed";
+						div.style.top = "0";
+						div.style.left = "0";
+						div.style.background = "#fff";
+						div.style.color = "#000";
+						div.style.padding = "15px";
+						div.style.fontFamily = "sans-serif";
+						div.style.boxShadow = "5px 5px 10px 0px #000";
+						div.style.zIndex = "99999999999";
+						{
+							const msg = document.createElement("p");
+							msg.style.margin = "0 0 10px 0";
+							msg.appendChild(document.createTextNode("Could not connect to the WebHID server. The server might be down, or the "));
+							const link = document.createElement("a");
+							link.href = "#";
+							link.textContent = "token set in the extension";
+							link.style.color = "#00f";
+							link.style.textDecoration = "underline";
+							link.style.cursor = "pointer";
+							link.onclick = function(e)
+							{
+								e.preventDefault();
+								window.postMessage({ type: "webhid-open-options" }, "*");
+							};
+							msg.appendChild(link);
+							msg.appendChild(document.createTextNode(" might be wrong or unset."));
+							div.appendChild(msg);
+						}
+						{
+							const button = document.createElement("button");
+							button.style.border = "2px outset ButtonBorder";
+							button.style.backgroundColor = "ButtonFace";
+							button.textContent = "OK";
+							button.onclick = function()
+							{
+								document.documentElement.removeChild(div);
+							};
+							div.appendChild(button);
+						}
+						document.documentElement.appendChild(div);
+					}
 				};
 				ws.onmessage = function(event)
 				{

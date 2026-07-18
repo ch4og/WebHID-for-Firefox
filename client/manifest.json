@@ -24,7 +24,11 @@
 			"run_at": "document_start"
 		}
 	],
+	"options_ui": {
+		"page": "options.html"
+	},
 	"permissions": [
+		"storage",
 		"webRequest",
 		"webRequestBlocking",
 		"https://wootility.io/",

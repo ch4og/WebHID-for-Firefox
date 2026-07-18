@@ -232,8 +232,18 @@ struct ListDevicesTask : public soup::Task
 	}
 };
 
+static std::string auth_token;
+
 int entry(std::vector<std::string>&& args, bool console)
 {
+	for (size_t i = 1; i < args.size(); ++i)
+	{
+		if (args[i] == "--token" && i + 1 < args.size())
+		{
+			auth_token = args[++i];
+		}
+	}
+
 	auto certstore = soup::make_shared<CertStore>();
 	{
 		X509Certchain certchain;
@@ -352,6 +362,33 @@ fPOzDget78P/d2IgzbaKEA==
 		{
 			return false;
 		}
+
+		if (!auth_token.empty())
+		{
+			auto qpos = req.path.find('?');
+			if (qpos != std::string::npos)
+			{
+				auto query = req.path.substr(qpos + 1);
+				auto tpos = query.find("token=");
+				if (tpos != std::string::npos)
+				{
+					auto token_val = query.substr(tpos + 6);
+					// strip trailing & or anything after
+					auto amp = token_val.find('&');
+					if (amp != std::string::npos)
+					{
+						token_val = token_val.substr(0, amp);
+					}
+					if (token_val == auth_token)
+					{
+						goto token_ok;
+					}
+				}
+			}
+			return false;
+		}
+		token_ok:
+
 #if DEBUG || !SOUP_WINDOWS
 		return true;
 #else
@@ -498,7 +535,12 @@ fPOzDget78P/d2IgzbaKEA==
 #endif
 		return 1;
 	}
-	std::cout << "Listening on port 33881." << std::endl;
+	std::cout << "Listening on port 33881.";
+	if (!auth_token.empty())
+	{
+		std::cout << " [token auth enabled]";
+	}
+	std::cout << std::endl;
 	serv.run();
 	return 0;
 }

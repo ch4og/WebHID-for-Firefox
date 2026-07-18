@@ -9,6 +9,12 @@
 	["blocking", "responseHeaders"]
 );*/
 
+browser.runtime.onMessage.addListener(function(message) {
+	if (message.type === "open-options") {
+		browser.runtime.openOptionsPage();
+	}
+});
+
 browser.webRequest.onBeforeRequest.addListener(
 	(details) => {
 		const filter = browser.webRequest.filterResponseData(details.requestId);

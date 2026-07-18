@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>WebHID for Firefox - Settings</title>
+	<style>
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+			max-width: 500px;
+			margin: 2rem auto;
+			padding: 0 1rem;
+		}
+		h1 {
+			font-size: 1.2rem;
+		}
+		label {
+			display: block;
+			margin-bottom: 0.5rem;
+			font-weight: bold;
+		}
+		input[type="text"] {
+			width: 100%;
+			padding: 0.5rem;
+			font-size: 1rem;
+			margin-bottom: 1rem;
+			box-sizing: border-box;
+		}
+		button {
+			padding: 0.5rem 1.5rem;
+			font-size: 1rem;
+			cursor: pointer;
+		}
+		#status {
+			margin-top: 0.5rem;
+			color: green;
+		}
+	</style>
+</head>
+<body>
+	<h1>WebHID for Firefox</h1>
+	<label for="token">Server Authentication Token</label>
+	<input type="text" id="token" placeholder="Enter token (leave blank if none)">
+	<button id="save">Save</button>
+	<div id="status"></div>
+	<script src="options.js"></script>
+</body>
+</html>
